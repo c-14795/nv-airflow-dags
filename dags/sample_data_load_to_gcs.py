@@ -38,9 +38,6 @@ def get_groups_df():
     # Create a DataFrame from the data
     df = pd.DataFrame(groups_data)
     
-    # Store metadata as string
-    df['metadata'] = df['metadata'].astype(str)
-    
     # Convert created_at column to datetime
     df['created_at'] = pd.to_datetime(df['created_at'])
     return df
