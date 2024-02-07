@@ -33,6 +33,7 @@ delete_cluster = DataprocClusterDeleteOperator(
     task_id='delete_dataproc_cluster',
     cluster_name=cluster_name,
     project_id='nv-interview-chaitanya',
+    region='us-east4',
     dag=dag
 )
 
