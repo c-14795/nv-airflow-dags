@@ -23,7 +23,6 @@ create_cluster = DataprocClusterCreateOperator(
     num_workers=2,
     num_masters=1,
     region='us-east4',
-    service_account="nv-chaitanya-ke-ce-storage@nv-interview-chaitanya.iam.gserviceaccount.com",
     zone='us-east4-a',
     gcp_conn_id='gcp_conn',
     master_machine_type='n1-standard-2',
