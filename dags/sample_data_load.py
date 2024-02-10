@@ -36,7 +36,6 @@ delete_cluster = DataprocClusterDeleteOperator(
     cluster_name=cluster_name,
     project_id='nv-interview-chaitanya',
     region='us-east4',
-    zone='us-east4-a',
     gcp_conn_id='gcp_conn',
     dag=dag
 )
