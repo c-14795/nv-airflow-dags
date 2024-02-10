@@ -27,7 +27,7 @@ create_cluster = DataprocClusterCreateOperator(
     zone='us-east4-a',
     gcp_conn_id='gcp_conn',
     master_machine_type='n1-standard-2',
-    worker_machine_type='n1-standard-4'
+    worker_machine_type='n1-standard-4',
     dag=dag
 )
 
