@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.providers.google.cloud.operators.dataproc import DataprocClusterCreateOperator, DataprocClusterDeleteOperator, DataprocSubmitPySparkJobOperator, ClusterGenerator
+from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitPySparkJobOperator, ClusterGenerator
 
 default_args = {
     'owner': 'airflow',
