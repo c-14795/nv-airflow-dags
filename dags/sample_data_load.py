@@ -35,7 +35,7 @@ cluster_config = ClusterGenerator(
         master_disk_size=100,
         worker_disk_size=50,
         properties={
-            "spark:spark.jars.packages": "io.delta:delta-core_2.12:3.1.0",
+            "spark:spark.jars.packages": "io.delta:delta-spark_2.12:3.1.0",
         },
         metadata={"GCS_CONNECTOR_VERSION": "2.2.2","gcs-connector-version":"2.2.2"}  #  metadata here
     ).make()
@@ -56,7 +56,7 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
     region=region,
     project_id=project_id,
     dataproc_properties={
-            "spark.jars.packages": "io.delta:delta-core_2.12:3.1.0",
+            "spark.jars.packages": "io.delta:delta-spark_2.12:3.1.0",
         },
     job_name=load_data,
     gcp_conn_id=gcp_conn_id,
