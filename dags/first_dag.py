@@ -2,6 +2,9 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.providers.google.cloud.operators.kubernetes_engine import (
+    GKEStartPodOperator
+)
 
 # Define default arguments for the DAG
 default_args = {
@@ -43,6 +46,20 @@ task2 = PythonOperator(
     dag=dag,
 )
 
+pod_task_xcom = GKEStartPodOperator(
+    task_id="pod_task_xcom",
+    project_id="nv-interview-chaitanya",
+    location="us-east4",
+    cluster_name="nv-east",
+    do_xcom_push=True,
+    namespace="airflow-ns",
+    image="alpine",
+    cmds=["bash", "-cx"],
+    arguments=["kubectl get configmaps -n airflow-ns"],
+    name="test-pod-xcom",
+    in_cluster=True,
+    on_finish_action="delete_pod",
+)
 end_task = DummyOperator(task_id='end', dag=dag)
 
 # Define task dependencies
