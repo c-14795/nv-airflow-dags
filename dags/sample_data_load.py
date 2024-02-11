@@ -21,9 +21,10 @@ zone='us-east4-a'
 gcp_conn_id='gcp_conn'
 
 # Generate Dataproc cluster configuration with metadata
+## This can be wrapped around a function and re-utilised, keeping it simple for scope for assignment
 cluster_config = ClusterGenerator(
         project_id=project_id,
-        num_workers=num_workers,
+        num_workers=2,
         region=region,
         zone=zone,
         image_version="2.2.5-debian12",  #desired image version here
