@@ -47,6 +47,7 @@ task2 = PythonOperator(
 )
 
 pod_task_xcom = GKEStartPodOperator(
+    dag=dag,
     task_id="pod_task_xcom",
     project_id="nv-interview-chaitanya",
     location="us-east4",
