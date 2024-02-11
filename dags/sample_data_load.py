@@ -35,7 +35,7 @@ cluster_config = ClusterGenerator(
         master_disk_size=100,
         worker_disk_size=50,
         properties={
-            "spark.jars.packages": "io.delta:delta-core_2.12:2.4.0",
+            "spark:spark.jars.packages": "io.delta:delta-core_2.12:2.4.0",
         },
         metadata={"GCS_CONNECTOR_VERSION": "2.2.2","gcs-connector-version":"2.2.2"}  #  metadata here
     ).make()
