@@ -57,8 +57,7 @@ pod_task_xcom = GKEStartPodOperator(
     cmds=["bash", "-cx"],
     arguments=["kubectl get configmaps -n airflow-ns"],
     name="test-pod-xcom",
-    in_cluster=True,
-    on_finish_action="delete_pod",
+    in_cluster=True
 )
 end_task = DummyOperator(task_id='end', dag=dag)
 
