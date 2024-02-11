@@ -45,6 +45,7 @@ create_cluster = DataprocCreateClusterOperator(
     cluster_name=cluster_name,
     cluster_config=cluster_config,
     gcp_conn_id=gcp_conn_id,
+    region=region,
     dag=dag
 )
 load_data ='sample_data_gen'
