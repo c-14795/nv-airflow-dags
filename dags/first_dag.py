@@ -7,6 +7,7 @@ from airflow.providers.google.cloud.operators.kubernetes_engine import (
 )
 from kubernetes import client, config
 import json
+from airflow.models import Variable
 
 # Define default arguments for the DAG
 default_args = {
@@ -54,6 +55,7 @@ start_task = DummyOperator(task_id='start', dag=dag)
 
 def task1_function():
     print("Executing Task 1")
+    
 
 task1 = PythonOperator(
     task_id='task1',
@@ -63,6 +65,8 @@ task1 = PythonOperator(
 
 def task2_function():
     print("Executing Task 2")
+    print(Variable.get("pii_map"))
+    
 
 task2 = PythonOperator(
     task_id='task2',
