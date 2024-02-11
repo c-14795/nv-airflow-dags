@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitPySparkJobOperator, ClusterGenerator
+from airflow.models import Variable
 
 default_args = {
     'owner': 'airflow',
@@ -62,6 +63,21 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
     gcp_conn_id=gcp_conn_id,
     dag=dag
 )
+load_masked_pii = 'mask_pii'
+mask_pii = DataprocSubmitPySparkJobOperator(
+    task_id = load_masked_pii,
+    main= 'gs://nv-interview-chaitanya/mask_pii.py',
+    cluster_name=cluster_name,
+    region=region,
+    project_id=project_id,
+    dataproc_properties={
+            "spark.jars.packages": "io.delta:delta-spark_2.12:3.1.0",
+        },
+    job_name=load_masked_pii,
+    gcp_conn_id=gcp_conn_id,
+    dag=dag,
+    arguments=["--pii_map",Variable.get("pii_map")]
+)
 
 delete_cluster = DataprocDeleteClusterOperator(
     task_id='delete_dataproc_cluster',
@@ -72,4 +88,4 @@ delete_cluster = DataprocDeleteClusterOperator(
     dag=dag
 )
 
-create_cluster >> generate_sample_data >> delete_cluster
+create_cluster >> generate_sample_data >> mask_pii >> delete_cluster
