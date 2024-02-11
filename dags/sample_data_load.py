@@ -53,7 +53,7 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
     main= 'gs://nv-interview-chaitanya/sample_data_gen_using_spark.py',
     cluster_name=cluster_name,
     region=region,
-    project_id=project_id
+    project_id=project_id,
     dataproc_properties={
             "spark.jars.packages": "io.delta:delta-core_2.12:2.4.0",
         },
