@@ -5,6 +5,8 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.operators.kubernetes_engine import (
     GKEStartPodOperator
 )
+from kubernetes import client, config
+import json
 
 # Define default arguments for the DAG
 default_args = {
@@ -24,6 +26,28 @@ dag = DAG(
     description='A basic DAG example',
     schedule_interval=None,  # No fixed schedule
 )
+
+def fetch_config_maps():
+    try:
+        # Load kube config from default location or provide the path to the kube config file
+        config.load_kube_config()
+
+        # Create a Kubernetes API client
+        api_instance = client.CoreV1Api()
+
+        # Fetch all ConfigMaps in the airflow namespace
+        namespace = 'airflow-ns'
+        config_maps = api_instance.list_namespaced_config_map(namespace)
+
+        # Convert ConfigMaps to a dictionary for JSON serialization
+        config_maps_dict = {cm.metadata.name: cm.data for cm in config_maps.items}
+
+        # Print or process the fetched ConfigMaps
+        print("ConfigMaps in the airflow namespace:")
+        print(json.dumps(config_maps_dict, indent=4))
+
+    except Exception as e:
+        print("Exception:", e)
 
 # Define tasks
 start_task = DummyOperator(task_id='start', dag=dag)
@@ -45,23 +69,12 @@ task2 = PythonOperator(
     python_callable=task2_function,
     dag=dag,
 )
-
-pod_task_xcom = GKEStartPodOperator(
+task3 = PythonOperator(
+    task_id='task3',
+    python_callable=fetch_config_maps,
     dag=dag,
-    gcp_conn_id = 'gcp_con',
-    task_id="pod_task_xcom",
-    project_id="nv-interview-chaitanya",
-    location="us-east4",
-    cluster_name="nv-east",
-    do_xcom_push=True,
-    namespace="airflow-ns",
-    image="alpine",
-    cmds=["bash", "-cx"],
-    arguments=["kubectl get configmaps -n airflow-ns"],
-    name="test-pod-xcom",
-    in_cluster=True
 )
 end_task = DummyOperator(task_id='end', dag=dag)
 
 # Define task dependencies
-start_task >>[ task1, task2, pod_task_xcom] >> end_task
+start_task >>[ task1, task2, task3] >> end_task
