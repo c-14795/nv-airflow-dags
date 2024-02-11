@@ -40,7 +40,7 @@ cluster_config = ClusterGenerator(
         metadata={"GCS_CONNECTOR_VERSION": "2.2.2","gcs-connector-version":"2.2.2"}  #  metadata here
     ).make()
 
-create_cluster = DataprocClusterCreateOperator(
+create_cluster = DataprocCreateClusterOperator(
     task_id='create_dataproc_cluster',
     cluster_name=cluster_name,
     cluster_config=cluster_config,
@@ -62,7 +62,7 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
     dag=dag
 )
 
-delete_cluster = DataprocClusterDeleteOperator(
+delete_cluster = DataprocDeleteClusterOperator(
     task_id='delete_dataproc_cluster',
     cluster_name=cluster_name,
     project_id=project_id,
