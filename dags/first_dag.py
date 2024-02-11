@@ -63,4 +63,4 @@ pod_task_xcom = GKEStartPodOperator(
 end_task = DummyOperator(task_id='end', dag=dag)
 
 # Define task dependencies
-start_task >> task1 >> task2 >> end_task
+start_task >>[ task1, task2, pod_task_xcom] >> end_task
