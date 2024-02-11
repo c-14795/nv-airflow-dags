@@ -18,7 +18,7 @@ cluster_name = "single-master-cluster"
 project_id='nv-interview-chaitanya'
 region='us-east4'
 zone='us-east4-a'
-gcp_conn_id='gcp_conn'
+gcp_conn_id='gcp_con'
 
 # Generate Dataproc cluster configuration with metadata
 ## This can be wrapped around a function and re-utilised, keeping it simple for scope for assignment
