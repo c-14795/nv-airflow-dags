@@ -26,7 +26,6 @@ cluster_config = ClusterGenerator(
         num_workers=num_workers,
         region=region,
         zone=zone,
-        region=region,
         image_version="2.2.5-debian12",  #desired image version here
         master_machine_type='n1-standard-2',
         worker_machine_type='n1-standard-4',
