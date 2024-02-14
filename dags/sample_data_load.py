@@ -82,7 +82,7 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
 pii_map_fetcher = PythonOperator(
     task_id='pii_map_fetcher',
     python_callable=read_config_maps,
-    provide_context=True
+    provide_context=True,
     dag=dag,
 )
 load_masked_pii = 'mask_pii'
