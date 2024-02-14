@@ -8,6 +8,8 @@ from airflow.providers.google.cloud.operators.kubernetes_engine import (
 from kubernetes import client, config
 import json
 from airflow.models import Variable
+import os
+import yaml
 
 # Define default arguments for the DAG
 default_args = {
@@ -50,6 +52,19 @@ def fetch_config_maps():
     except Exception as e:
         print("Exception:", e)
 
+def read_config_maps():
+    try:
+        if not os.path.exists("/opt/airflow/config/pii-config/data"):
+            print("file not found!! please check")
+        else:
+            with open("/opt/airflow/config/pii-config/data", "r") as stream:
+                data = yaml.safe_load(stream)
+                print(data)
+    except Exception as e:
+        print("exception")
+        print(e)
+                
+
 # Define tasks
 start_task = DummyOperator(task_id='start', dag=dag)
 
@@ -75,7 +90,7 @@ task2 = PythonOperator(
 )
 task3 = PythonOperator(
     task_id='task3',
-    python_callable=fetch_config_maps,
+    python_callable=read_config_maps,
     dag=dag,
 )
 end_task = DummyOperator(task_id='end', dag=dag)
