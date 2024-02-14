@@ -4,6 +4,10 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.providers.google.cloud.operators.dataproc import DataprocCreateClusterOperator, DataprocDeleteClusterOperator, DataprocSubmitPySparkJobOperator, ClusterGenerator
 from airflow.models import Variable
 
+import json
+import os
+import yaml
+
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
