@@ -21,6 +21,22 @@ region='us-east4'
 zone='us-east4-a'
 gcp_conn_id='gcp_con'
 
+# reads data from pii map
+def read_config_maps(**context):
+    try:
+        if not os.path.exists("/opt/airflow/config/pii-config/data"):
+            print("file not found!! please check")
+        else:
+            with open(os.path.join(Variable.get("pii-map"),'data'), "r") as stream:
+                data = yaml.safe_load(stream)
+                print(data) # for testing purposes
+                context['ti'].xcom_push(key='pii-map', value=json.dumps(data))
+                
+    except Exception as e:
+        print("exception")
+        print(e)
+    
+
 # Generate Dataproc cluster configuration with metadata
 ## This can be wrapped around a function and re-utilised, keeping it simple for scope for assignment
 cluster_config = ClusterGenerator(
@@ -63,6 +79,12 @@ generate_sample_data = DataprocSubmitPySparkJobOperator(
     gcp_conn_id=gcp_conn_id,
     dag=dag
 )
+pii_map_fetcher = PythonOperator(
+    task_id='pii_map_fetcher',
+    python_callable=read_config_maps,
+    provide_context=True
+    dag=dag,
+)
 load_masked_pii = 'mask_pii'
 mask_pii = DataprocSubmitPySparkJobOperator(
     task_id = load_masked_pii,
@@ -76,7 +98,7 @@ mask_pii = DataprocSubmitPySparkJobOperator(
     job_name=load_masked_pii,
     gcp_conn_id=gcp_conn_id,
     dag=dag,
-    arguments=["--pii_map",Variable.get("pii_map")]
+    arguments=["--pii_map","{{ task_instance.xcom_pull(task_ids='pii_map_fetcher',key='pii-map') }}"]
 )
 
 delete_cluster = DataprocDeleteClusterOperator(
@@ -88,4 +110,4 @@ delete_cluster = DataprocDeleteClusterOperator(
     dag=dag
 )
 
-create_cluster >> generate_sample_data >> mask_pii >> delete_cluster
+[pii_map_fetcher, create_cluster] >> generate_sample_data >> mask_pii >> delete_cluster
